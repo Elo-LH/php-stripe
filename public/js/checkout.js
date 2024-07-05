@@ -3,10 +3,19 @@
 /* global fetch */
 /* global URLSearchParams */
 
-const stripe = $_ENV["SK_TEST"]
+const stripe = Stripe(
+  "pk_test_51PZ7VSRsVBw2VyvsRecjpfHLXV24j02xyIUdzsphIAaCG44jyW5rTl21eK3tJW9zX7HdSRoyXSMSFCrLoSRRuKlV00AEOblWu9"
+)
 
-let amount
-initialize()
+const input = document.querySelector("#payment-form input")
+let amount = 0
+input.addEventListener("change", (event) => {
+  amount = event.target.value
+
+  if (amount >= 1) {
+    initialize()
+  }
+})
 
 let elements
 
@@ -44,7 +53,7 @@ async function handleSubmit(e) {
   const { error } = await stripe.confirmPayment({
     elements,
     confirmParams: {
-      return_url: "",
+      return_url: `http://php-stripe/public/app/views/checkout.html`,
     },
   })
 

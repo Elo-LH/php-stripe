@@ -1,4 +1,11 @@
 {
+  "autoload": {
+    "classmap": [
+      "app/",
+      "config/",
+      "public/"
+    ]
+  },
   "require": {
     "stripe/stripe-php": "^15.0",
     "vlucas/phpdotenv": "^5.6"

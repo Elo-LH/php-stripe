@@ -1,10 +1,13 @@
 <?php
 
+$key = $_ENV['SK_TEST'];
+$stripe = new StripeClient($key);
+
 function calculateOrderAmount(int $amount): int {
     // Replace this constant with a calculation of the order's amount
     // Calculate the order total on the server to prevent
     // people from directly manipulating the amount on the client
-    return 1400;
+    return $amount * 100;
 }
 
 header('Content-Type: application/json');
@@ -13,8 +16,18 @@ try {
     // retrieve JSON from POST body
     $jsonStr = file_get_contents('php://input');
     $jsonObj = json_decode($jsonStr);
+    var_dump($jsonObj);
 
     // TODO : Create a PaymentIntent with amount and currency in '$paymentIntent'
+        // Create a PaymentIntent with amount and currency
+        $paymentIntent = $stripe->paymentIntents->create([
+            'amount' => calculateOrderAmount($jsonObj->items),
+            'currency' => 'eur',
+            // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
+            'automatic_payment_methods' => [
+                'enabled' => true,
+            ],
+        ]);
 
     $output = [
         'clientSecret' => $paymentIntent->client_secret,
